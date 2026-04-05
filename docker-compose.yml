@@ -1,0 +1,39 @@
+services:
+  video-downloader:
+    build: .
+    volumes:
+      - ./downloads:/app/downloads
+      - ./cookies.txt:/app/cookies.txt
+    environment:
+      - HEADLESS_MODE=true
+      - PAGE_LOAD_TIMEOUT=30
+      - PAGE_LOAD_DELAY=5
+      - NETWORK_WAIT_TIMEOUT=20
+      - BUTTON_WAIT_DELAY=5
+
+      - ENABLE_VIDEO_CONVERSION=true
+      - DOWNLOAD_PATH=/app/downloads
+      - COOKIE_FILE=/app/cookies.txt
+
+      - YDL_RETRIES=10
+      - FRAGMENT_RETRIES=10
+      - WAIT_FOR_VIDEO=30
+
+      - DBUS_SESSION_BUS_ADDRESS=/dev/null
+      
+    restart: unless-stopped
+    networks:
+      - downloader-net
+    shm_size: '2gb'
+    cap_add:
+      - SYS_ADMIN
+      - SYS_PTRACE
+      - DAC_OVERRIDE
+      - DAC_READ_SEARCH
+    security_opt:
+      - seccomp=unconfined
+      - apparmor=unconfined
+
+networks:
+  downloader-net:
+    driver: bridge
