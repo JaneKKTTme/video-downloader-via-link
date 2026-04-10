@@ -24,14 +24,43 @@ logger = setup_logger(__name__)
 
 
 class BrowserService:
+	"""Service for browser automation and video URL extraction.
+	
+	This class manages Chrome WebDriver instances and provides methods
+	to capture network traffic and extract video URLs from web pages.
+	
+	Attributes:
+		config: Downloader configuration containing browser settings.
+		use_webdriver_manager: Whether to use webdriver-manager for driver binary.
+		driver_path: Path to ChromeDriver executable.
+	"""
 
 	def __init__(self, config: DownloaderConfig, use_webdriver_manager: bool = True):
+		"""Initialize the browser service.
+		
+		Args:
+			config: Downloader configuration with browser settings.
+			use_webdriver_manager: If True, use webdriver-manager to handle driver binary.
+		"""
 		self.config = config
 		self.use_webdriver_manager = use_webdriver_manager
 		self.driver_path = self._get_driver_path()
 
 	@contextmanager
 	def create_driver(self) -> Generator[webdriver.Chrome, None, None]:
+		"""Create and manage a Chrome WebDriver instance as a context manager.
+		
+		Yields:
+			Configured Chrome WebDriver instance.
+			
+		Raises:
+			BrowserError: If WebDriver creation fails.
+			
+		Examples:
+			>>> with browser_service.create_driver() as driver:
+			...	 	driver.get("https://example.com")
+			...	 	# Driver automatically quits after block
+		"""
 		options = self._get_chrome_options()
 		driver = None
 		try:
@@ -52,6 +81,18 @@ class BrowserService:
 				logger.debug('WebDriver closed')
 
 	def _get_driver_path(self) -> str:
+		"""Determine the ChromeDriver path to use.
+		
+		Checks Docker paths first, then falls back to webdriver-manager or system PATH.
+		
+		Returns:
+			Path to ChromeDriver executable.
+			
+		Examples:
+			>>> path = browser_service._get_driver_path()
+			>>> print(path)
+			'/usr/local/bin/chromedriver'
+		"""
 		docker_paths = [
 			'/usr/local/bin/chromedriver',
 			'/usr/bin/chromedriver',
@@ -73,6 +114,11 @@ class BrowserService:
 		return 'chromedriver'
 
 	def _get_chrome_options(self) -> webdriver.ChromeOptions:
+		"""Configure Chrome browser options.
+		
+		Returns:
+			ChromeOptions object with configured arguments and capabilities.
+		"""
 		options = webdriver.ChromeOptions()
 
 		for arg in self.config.browser.chrome_options:
@@ -96,6 +142,11 @@ class BrowserService:
 		return options
 
 	def _find_chrome_binary(self) -> str:
+		"""Locate Chrome browser executable on the system.
+		
+		Returns:
+			Path to Chrome executable, or None if not found.
+		"""
 		chrome_paths = []
 	
 		if sys.platform == 'win32':
@@ -129,6 +180,21 @@ class BrowserService:
 		return None
 
 	def capture_network_videos(self, url: str) -> List[str]:
+		"""Capture video URLs from network traffic.
+		
+		Loads the page, scrolls, clicks play button, and extracts video URLs
+		from performance logs.
+		
+		Args:
+			url: Web page URL to analyze.
+			
+		Returns:
+			List[str]: List of unique video URLs found in network traffic.
+			
+		Examples:
+			>>> urls = browser_service.capture_network_videos("https://example.com/video")
+			>>> print(f"Found {len(urls)} video streams")
+		"""
 		with self.create_driver() as driver:
 			try:
 				driver.get(url)
@@ -160,6 +226,14 @@ class BrowserService:
 				return []
 
 	def _click_play_button(self, driver: webdriver.Chrome) -> bool:
+		"""Attempt to click play button using configured XPath patterns.
+		
+		Args:
+			driver: Chrome WebDriver instance.
+			
+		Returns:
+			bool: True if a play button was found and clicked, False otherwise.
+		"""
 		wait = WebDriverWait(driver, self.config.browser.button_wait_timeout)
 
 		for xpath in self.config.browser.play_button_xpaths:
@@ -175,8 +249,15 @@ class BrowserService:
 		return False
 
 	def _extract_video_urls(self, driver: webdriver.Chrome) -> List[str]:
+		"""Extract video URLs from browser performance logs.
+		
+		Args:
+			driver: Chrome WebDriver instance.
+			
+		Returns:
+			List[str]: List of unique video URLs found in network logs.
+		"""
 		available_logs = driver.log_types
-
 		if 'performance' not in available_logs:
 			logger.error('Performance logs not available')
 			return []
@@ -207,6 +288,14 @@ class BrowserService:
 		return unique_urls
 
 	def _is_video_url(self, url: str) -> bool:
+		"""Check if URL points to video content.
+		
+		Args:
+			url: URL to check.
+			
+		Returns:
+			bool: True if URL appears to be a video stream, False otherwise.
+		"""
 		video_extensions = ['m3u8', 'mp4']
 		video_patterns = ['master', 'index']
 
@@ -219,6 +308,21 @@ class BrowserService:
 		return has_extension and has_pattern and not is_blob
 
 	def find_direct_video_urls(self, url: str) -> List[str]:
+		"""Find direct video URLs in page HTML.
+		
+		Searches for video URLs in anchor tags and source elements.
+		
+		Args:
+			url: Web page URL to search.
+			
+		Returns:
+			List[str]: List of unique direct video URLs found on the page.
+			
+		Examples:
+			>>> urls = browser_service.find_direct_video_urls("https://example.com")
+			>>> for url in urls:
+			...	 	print(f"Direct link: {url}")
+		"""
 		with self.create_driver() as driver:
 			try:
 				driver.get(url)

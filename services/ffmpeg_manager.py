@@ -11,14 +11,36 @@ logger = setup_logger(__name__)
 
 
 class FFmpegManager:
+	"""Manages FFmpeg availability and configuration for video processing.
+	
+	This class handles FFmpeg binary detection and provides configuration
+	for yt-dlp to use FFmpeg for video conversion and downloading.
+	
+	Attributes:
+		config: Downloader configuration.
+		available: Whether FFmpeg is available on the system.
+		location: Path to FFmpeg executable, if found.
+	"""
 
 	def __init__(self, config: DownloaderConfig):
+		"""Initialize FFmpeg manager and check for FFmpeg availability.
+		
+		Args:
+			config: Downloader configuration with FFmpeg settings.
+		"""
 		self.config = config
 		self.available = False
 		self.location: Optional[str] = None
 		self._check_ffmpeg()
 
 	def _check_ffmpeg(self) -> bool:
+		"""Check if FFmpeg is available on the system.
+		
+		Searches in configured location, system PATH, and standard paths.
+		
+		Returns:
+			bool: True if FFmpeg is found and usable, False otherwise.
+		"""
 		if self.config.ffmpeg_location:
 			if os.path.exists(self.config.ffmpeg_location):
 				logger.info(f'FFmpeg found at: {self.config.ffmpeg_location}')
@@ -55,9 +77,30 @@ class FFmpegManager:
 		return False
 
 	def get_ffmpeg_path(self) -> Optional[str]:
+		"""Get the path to FFmpeg executable.
+		
+		Returns:
+			Optional[str]: Path to FFmpeg if available, None otherwise.
+		"""
 		return self.location if self.available else None
 
 	def configure_ydl_options(self, base_options: dict) -> dict:
+		"""Configure yt-dlp options based on FFmpeg availability.
+		
+		Adds FFmpeg post-processors for video conversion if available.
+		
+		Args:
+			base_options: Base yt-dlp options dictionary.
+			
+		Returns:
+			dict: Modified yt-dlp options with FFmpeg configuration.
+			
+		Examples:
+			>>> base = {'outtmpl': '%(title)s.%(ext)s'}
+			>>> options = ffmpeg_manager.configure_ydl_options(base)
+			>>> 'postprocessors' in options
+			True
+		"""
 		options = base_options.copy()
 
 		if self.available and self.config.enable_video_conversion:

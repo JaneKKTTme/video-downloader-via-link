@@ -16,8 +16,34 @@ logger = setup_logger(__name__)
 
 
 class VideoDownloader:
+	"""Main video downloader class that orchestrates multiple download strategies.
+	
+	This class provides a unified interface for downloading videos using
+	multiple strategies. It tries each strategy in order until one succeeds.
+	
+	Attributes:
+		config: Downloader configuration settings.
+		ffmpeg_manager: Manager for FFmpeg operations.
+		strategies: List of download strategies to try in order.
+		
+	Examples:
+		>>> downloader = VideoDownloader()
+		>>> success = downloader.download("https://example.com/video")
+		>>> if success:
+		...	 	print("Video downloaded successfully!")
+		
+		>>> config = DownloaderConfig()
+		>>> config.download_path = "my_videos"
+		>>> downloader = VideoDownloader(config)
+		>>> results = downloader.download_multiple(["url1", "url2", "url3"])
+	"""
 
 	def __init__(self, config: Optional[DownloaderConfig] = None):
+		"""Initialize the video downloader.
+		
+		Args:
+			config: Optional configuration. If None, loads from environment.
+		"""
 		self.config = config or DownloaderConfig.from_env()
 
 		self.ffmpeg_manager = FFmpegManager(self.config)
@@ -34,6 +60,11 @@ class VideoDownloader:
 		self._log_initialization()
 
 	def _validate_config(self) -> None:
+		"""Validate configuration and create necessary directories.
+		
+		Raises:
+			ConfigurationError: If configuration is invalid.
+		"""
 		import os
 		os.makedirs(self.config.download_path, exist_ok=True)
 
@@ -42,6 +73,7 @@ class VideoDownloader:
 				logger.warning(f'Cookie file not found: {self.config.cookie_file}')
 
 	def _log_initialization(self) -> None:
+		"""Log initialization details including FFmpeg status."""
 		logger.info(f'VideoDownloader initialized (headless={self.config.browser.headless_mode})')
 
 		if self.ffmpeg_manager.available:
@@ -50,6 +82,27 @@ class VideoDownloader:
 			logger.info(f'FFmpeg not available - downloading in original format')
 
 	def download(self, url: str) -> bool:
+		"""Download a video from the given URL.
+		
+		Tries each download strategy in order until one succeeds.
+		
+		Args:
+			url: Video URL to download.
+			
+		Returns:
+			bool: True if download succeeded.
+			
+		Raises:
+			DownloadError: If all download strategies fail.
+			ValueError: If URL is invalid or empty.
+			
+		Examples:
+			>>> downloader = VideoDownloader()
+			>>> try:
+			...	 	downloader.download("https://youtube.com/watch?v=123")
+			... except DownloadError as e:
+			...	 	print(f"Failed: {e}")
+		"""
 		if not url or not isinstance(url, str):
 			logger.error(f'Invalid URL: {url}')
 			raise DownloadError(f'Invalid URL provided: {url}')
@@ -76,6 +129,23 @@ class VideoDownloader:
 		raise DownloadError(f'Failed to download video from: {url}')
 
 	def download_multiple(self, urls: List[str]) -> dict:
+		"""Download multiple videos.
+		
+		Args:
+			urls: List of video URLs to download.
+			
+		Returns:
+			dict: Dictionary mapping URLs to download results.
+			
+		Examples:
+			>>> downloader = VideoDownloader()
+			>>> results = downloader.download_multiple([
+			...	 	"https://example.com/video1",
+			...	 	"https://example.com/video2"
+			... ])
+			>>> for url, result in results.items():
+			...	 	print(f"{url}: {'Success' if result['success'] else result['error']}")
+		"""
 		results = {}
 
 		for url in urls:
@@ -96,6 +166,14 @@ class VideoDownloader:
 
 
 def main():
+	"""Command-line entry point for the video downloader.
+	
+	Parses command-line arguments and executes downloads.
+	
+	Examples:
+		python main.py https://example.com/video1 https://example.com/video2
+		python main.py --config custom_config.json https://example.com/video
+	"""
 	config = DownloaderConfig()
 	config.browser.headless_mode = False
 	config.download_path = 'downloads'

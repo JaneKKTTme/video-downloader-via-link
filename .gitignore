@@ -1,0 +1,7 @@
+/__pycache__
+/core/__pycache__
+/downloads
+/services/__pycache__
+/utils/__pycache__
+/venv
+cookies.txt
