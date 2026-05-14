@@ -2,12 +2,12 @@ from typing import Optional
 
 import yt_dlp
 
-from core.config import DownloaderConfig
-from core.interfaces import DownloadStrategy, VideoExtractor
-from core.exceptions import DownloadError
-from services.browser_service import BrowserService
-from services.ffmpeg_manager import FFmpegManager
-from utils.logger import setup_logger
+from app.core.config import DownloaderConfig
+from app.core.interfaces import DownloadStrategy, VideoExtractor
+from app.core.exceptions import DownloadError
+from app.services.browser_service import BrowserService
+from app.services.ffmpeg_manager import FFmpegManager
+from app.utils.logger import setup_logger
 
 
 logger = setup_logger(__name__)

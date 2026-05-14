@@ -4,8 +4,8 @@ This module exports the main configuration and exception classes used
 throughout the video downloader application.
 """
 
-from core.config import DownloaderConfig, BrowserConfig
-from core.exceptions import (
+from app.core.config import DownloaderConfig, BrowserConfig
+from app.core.exceptions import (
 	VideoDownloaderError,
 	ConfigurationError,
 	BrowserError,

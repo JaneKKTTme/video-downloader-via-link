@@ -2,9 +2,9 @@ import shutil
 import os
 from typing import Optional
 
-from core.config import DownloaderConfig
-from core.exceptions import FFmpegError
-from utils.logger import setup_logger
+from app.core.config import DownloaderConfig
+from app.core.exceptions import FFmpegError
+from app.utils.logger import setup_logger
 
 
 logger = setup_logger(__name__)
