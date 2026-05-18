@@ -18,27 +18,36 @@
 		<h1>Скачай видео без смс и регистрации!</h1>
 
 		<!-- Input section: URL field and downlaod button -->
-		<div class="input-group">
+		<form action="/download" method="post" class="input-group">
 			<div class="url-wrapper">
 				<!--
 					Text imput for video URL. 
 					Supports platforms: YouTube, Rutube, ZonaFilm.
 					Value attribute can be pre-filled for testing/demo.
 				-->
-				<input type="text" id="url" placeholder="Вставь ссылку на видео - YouTube, Rutube, TikTok..." value="">
+				<input type="text" name="url" id="url" placeholder="Вставь ссылку на видео - YouTube, Rutube, TikTok..." value="{{ link or '' }}" required>
 			</div>
 
 			<!-- Download button - triggers the main download logic -->
-			<button id="download-btn" type="button">
+			<button id="download-btn" type="submit">
 				<span>Скачать</span>
 			</button>
 		</div>
 
 		<!--
-			Dynamic result area.
+			Dynamic result area = only shown when message is available.
 			Displays download links, error messages, or video information.
 		-->
-		<div id="result-area"></div>
+		{% if result %}
+		<div id="result-area">
+			{% if success %}
+				{{ message }}<br>
+				{{ file_path }}
+			{% else %}
+				{{ message }}
+			{% endif %}
+		</div>
+		{% endif %}
 
 		<!--
 			Feature stickers / trust badges.
