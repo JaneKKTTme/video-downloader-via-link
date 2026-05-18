@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
+from app.schemas import HealthResponse
 from app.core.config import DownloaderConfig
-from app.core.schemas import HealthResponse
 from app.services.ffmpeg_manager import FFmpegManager
 
 
