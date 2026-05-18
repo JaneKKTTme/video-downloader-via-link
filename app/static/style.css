@@ -1,0 +1,423 @@
+/**
+ * Video Downloader In Nature-Themed Styles
+ * 
+ * A whimsical, nature-inspired design featuring glassmorphism effects,
+ * and warm earthy tones. Created for a video downloader
+ * service with a focus on user experience and visual delight.
+ * 
+ * Color Scheme:
+ * - Primary gradient: #19350c to #e8d98c
+ * - Accent colors: #19350c and #f5c542
+ * - Glass backgrounds: RGBA variants of #d5d3cc with 0.2-0.25 opacity
+ * 
+ * @version 1.0
+ * @author JaneKKTTme
+ * @requires Google Fonts - Plus Jakarta Sans, Inter
+ * @see https://fonts.google.com/specimen/Plus+Jakarta+Sans
+ */
+
+/* ============================================
+   RESET & GLOBAL STYLES
+   ============================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    /* Primary Nature Palette */
+    --color-dark-green: #19350c;
+    --color-mid-green: #2d5a1a;
+    --color-teal: #406768;
+    --color-blue-gray: #6fa9bb;
+    --color-light-gray: #d5d3cc;
+    --color-mustard: #e8b12c;
+    --color-sunflower: #f5c542;
+    --color-gold: #ffd966;
+    --color-warm-sand: #e8d98c;
+    
+    /* Derived Colors */
+    --color-white-soft: #fff8e0;
+    --color-white-pure: #fffff2;
+    --color-dark-text: #1f3a0c;
+    --color-placeholder: #b38f40;
+    --color-error-bg: #ffb347;
+    
+    /* Glassmorphism Effects */
+    --glass-bg: rgba(213, 211, 204, 0.2);
+    --glass-bg-hover: rgba(213, 211, 204, 0.25);
+    --glass-dark: rgba(25, 53, 12, 0.7);
+    --glass-mustard: rgba(232, 177, 44, 0.8);
+    --glass-sunflower: rgba(245, 197, 66, 0.7);
+    --input-bg: rgba(255, 254, 240, 0.96);
+    
+    /* Shadow Definitions */
+    --shadow-large: 0 40px 70px -15px rgba(0, 0, 0, 0.4);
+    --shadow-medium: 0 8px 22px rgba(232, 177, 44, 0.4);
+    --shadow-small: 0 4px 12px rgba(0, 0, 0, 0.15);
+    --shadow-glow: 0 15px 25px -8px #b87d1a;
+    --shadow-inset: inset 0 1px 2px rgba(255, 255, 200, 0.8);
+    --shadow-white: inset 0 1px 0 rgba(255, 250, 180, 0.3);
+}
+
+/* ============================================
+   BASE STYLES
+   ============================================ */
+
+body {
+    background: linear-gradient(145deg, 
+        var(--color-dark-green) 0%, 
+        var(--color-mid-green) 25%, 
+        var(--color-teal) 55%, 
+        var(--color-blue-gray) 80%, 
+        var(--color-warm-sand) 100%);
+    min-height: 100vh;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/**
+ * Canvas styling for floating dandelion particles.
+ * Fixed positioning creates parallax-like effect behind content.
+ */
+#dandelion-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* ============================================
+   MAIN CARD COMPONENT
+   ============================================ */
+
+.nature-card {
+    position: relative;
+    z-index: 20;
+    background: var(--glass-bg);
+    backdrop-filter: blur(18px);
+    border-radius: 72px;
+    max-width: 750px;
+    width: 100%;
+    padding: 2rem;
+    box-shadow: var(--shadow-large), var(--shadow-white);
+    border: 1px solid rgba(255, 240, 150, 0.5);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.nature-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 50px 80px -18px rgba(0, 0, 0, 0.5);
+    background: var(--glass-bg-hover);
+    border-color: rgba(255, 220, 100, 0.7);
+}
+
+.nature-card::after {
+    content: "🌾🌼";
+    position: absolute;
+    bottom: 20px;
+    right: 26px;
+    font-size: 36px;
+    opacity: 0.6;
+    pointer-events: none;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.2));
+}
+
+/* ============================================
+   TYPOGRAPHY
+   ============================================ */
+
+h1 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 2.4rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, 
+        var(--color-white-soft) 0%, 
+        var(--color-gold) 30%, 
+        #fff2b5 70%, 
+        var(--color-warm-sand) 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 0.7rem;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    letter-spacing: -0.3px;
+}
+
+h1:before {
+    content: "🌻";
+    font-size: 2.2rem;
+    background: none;
+    color: var(--color-gold);
+    text-shadow: 0 2px 6px var(--color-dark-green);
+}
+
+h1:after {
+    content: "🌼";
+    font-size: 2.2rem;
+    background: none;
+    color: var(--color-gold);
+    text-shadow: 0 2px 6px var(--color-dark-green);
+}
+
+.sub {
+    text-align: center;
+    background: var(--glass-mustard);
+    backdrop-filter: blur(8px);
+    color: var(--color-dark-text);
+    font-weight: 800;
+    font-size: 0.85rem;
+    display: inline-block;
+    width: auto;
+    margin: 0 auto 1.8rem auto;
+    padding: 8px 26px;
+    border-radius: 60px;
+    letter-spacing: 1px;
+    border: 1px solid #ffe484;
+    box-shadow: var(--shadow-small);
+}
+
+/* ============================================
+   FORM ELEMENTS
+   ============================================ */
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+    margin-bottom: 2rem;
+}
+
+.url-wrapper {
+    position: relative;
+}
+
+input {
+    width: 100%;
+    padding: 1.1rem 1.6rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 80px;
+    background: var(--input-bg);
+    font-family: 'Inter', monospace;
+    transition: all 0.25s;
+    outline: none;
+    color: var(--color-dark-text);
+    font-weight: 600;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15), var(--shadow-inset);
+    border: 2px solid #ffde8a;
+}
+
+input:focus {
+    background: var(--color-white-pure);
+    box-shadow: var(--shadow-medium), inset 0 1px 0 white;
+    border-color: #ffc107;
+    transform: scale(1.01);
+}
+
+input::placeholder {
+    color: var(--color-placeholder);
+    font-weight: 500;
+    opacity: 0.7;
+}
+
+button {
+    background: linear-gradient(125deg, 
+        var(--color-mustard) 0%, 
+        var(--color-sunflower) 40%, 
+        #f0bc3a 100%);
+    border: none;
+    padding: 1rem 1.8rem;
+    font-size: 1.2rem;
+    font-weight: 800;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    border-radius: 100px;
+    color: var(--color-dark-text);
+    cursor: pointer;
+    transition: all 0.25s;
+    letter-spacing: 1.2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    box-shadow: var(--shadow-glow);
+    border: 1px solid #ffefb0;
+    position: relative;
+    overflow: hidden;
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+        transparent,
+        rgba(255, 255, 200, 0.5),
+        transparent);
+    transition: left 0.5s;
+}
+
+button:hover::before {
+    left: 100%;
+}
+
+button:hover {
+    transform: translateY(-4px);
+    background: linear-gradient(125deg, #f0bc3a, var(--color-gold));
+    box-shadow: 0 20px 32px -8px var(--color-mustard);
+}
+
+button:active {
+    transform: translateY(2px);
+}
+
+/* ============================================
+   MESSAGE COMPONENTS
+   ============================================ */
+
+.result-message {
+    background: var(--glass-dark);
+    backdrop-filter: blur(12px);
+    border-radius: 48px;
+    padding: 1rem 1.8rem;
+    margin-top: 1.5rem;
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--color-white-soft);
+    border-left: 8px solid var(--color-gold);
+    border-right: 2px solid var(--color-sunflower);
+    font-family: 'Inter', sans-serif;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+}
+
+.error-icon {
+    display: inline-block;
+    background: var(--color-error-bg);
+    border-radius: 100px;
+    padding: 2px 12px;
+    margin-right: 10px;
+    color: var(--color-dark-text);
+    font-weight: bold;
+}
+
+/* ============================================
+   STICKERS / FEATURE BADGES
+   ============================================ */
+
+.nature-stickers {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+}
+
+.sticker {
+    background: var(--glass-mustard);
+    backdrop-filter: blur(8px);
+    padding: 8px 20px;
+    border-radius: 60px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--color-dark-text);
+    font-family: 'Plus Jakarta Sans', monospace;
+    letter-spacing: 0.5px;
+    border: 1px solid #ffefb0;
+    box-shadow: var(--shadow-small);
+    transition: all 0.2s ease;
+    cursor: default;
+}
+
+.sticker i {
+    font-style: normal;
+    margin-right: 8px;
+    font-size: 1rem;
+}
+
+.sticker:hover {
+    transform: translateY(-5px) scale(1.03);
+    background: var(--color-sunflower);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    color: #1b3a05;
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+footer {
+    margin-top: 3rem;
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #fff2b5;
+    position: relative;
+    z-index: 20;
+    background: var(--glass-dark);
+    backdrop-filter: blur(12px);
+    padding: 0.7rem 2rem;
+    border-radius: 60px;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: monospace;
+    border: 1px solid #ffde8a;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+@media (max-width: 580px) {
+    .nature-card {
+        padding: 1.8rem 1.2rem;
+    }
+    h1 {
+        font-size: 1.6rem;
+    }
+    button {
+        font-size: 1rem;
+        padding: 0.8rem 1.2rem;
+    }
+    .sticker {
+        font-size: 0.7rem;
+        padding: 5px 14px;
+    }
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+@keyframes riseUp {
+    0% {
+        opacity: 0;
+        transform: translateY(35px) scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0px) scale(1);
+    }
+}
+
+.nature-card {
+    animation: riseUp 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
+}

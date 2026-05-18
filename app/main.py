@@ -13,6 +13,8 @@ app = FastAPI(
 
 app.include_router(health.router, tags=['health'])
 
+app.mount('/static', StaticFiles(directory='app/static'), name='static')
+
 @app.get('/')
 async def root():
-	return FileResponse('./templates/video_downloader_page.html')
+	return FileResponse('app/templates/video_downloader_page.html')

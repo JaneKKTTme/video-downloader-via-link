@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<title>Video Downloader</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="Бесплатный сервис для скачивания видео по ссылке">
+	<meta name="keywords" content="скачивание видео, video downloader">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+	<!-- Main downloader part -->
+	<div class="nature-card">
+		<!-- Title with value proposition -->
+		<h1>Скачай видео без смс и регистрации!</h1>
+
+		<!-- Input section: URL field and downlaod button -->
+		<div class="input-group">
+			<div class="url-wrapper">
+				<!--
+					Text imput for video URL. 
+					Supports platforms: YouTube, Rutube, ZonaFilm.
+					Value attribute can be pre-filled for testing/demo.
+				-->
+				<input type="text" id="url" placeholder="Вставь ссылку на видео - YouTube, Rutube, TikTok..." value="">
+			</div>
+
+			<!-- Download button - triggers the main download logic -->
+			<button id="download-btn" type="button">
+				<span>Скачать</span>
+			</button>
+		</div>
+
+		<!--
+			Dynamic result area.
+			Displays download links, error messages, or video information.
+		-->
+		<div id="result-area"></div>
+
+		<!--
+			Feature stickers / trust badges.
+			Visual elements highlighting key service benefits.
+		-->
+		<div class="nature-stickers">
+			<div class="sticker"><i>🌼</i> лёгкий как пух</div>
+			<div class="sticker"><i>🌻</i> солнечная скорость</div>
+			<div class="sticker"><i>🌾</i> без границ</div>
+			<div class="sticker"><i>🦋</i> 100% свободно</div>
+		</div>
+	</div>
+
+	<!-- Footer wih copyright information -->
+	<footer class="production">
+		<span>🌼 Copyright © 2025 JaneKKTTme 🌼</span>
+	</footer>
+</body>
+</html>
