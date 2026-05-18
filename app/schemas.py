@@ -11,6 +11,12 @@ class DownloadRequest(BaseModel):
 			'example': {'url': 'https://www.youtube/com/watch?v=...'}
 		}
 
+class DownloadResponse(BaseModel):
+	success: bool
+	message: str
+	file_path: Optional[str] = None
+	error: Optional[str] = None
+
 class HealthResponse(BaseModel):
 	status: str
 	version: str
