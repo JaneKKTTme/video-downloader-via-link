@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: video-downloader
+    runtime: image
+    repo: https://github.com/JaneKKTTme/video-downloader-via-link
+    branch: main
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    envVars:
+      - key: HEADLESS_MODE
+        value: true
+      - key: DOWNLOAD_PATH
+        value: /app/downloads
