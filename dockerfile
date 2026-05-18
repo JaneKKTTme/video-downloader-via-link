@@ -64,10 +64,14 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN mkdir -p /app/downloads && \
+RUN mkdir -p /downloads && \
     useradd -m -u 1000 downloader && \
     chown -R downloader:downloader /app
 
 USER downloader
 
-CMD ["python", "-m", "main"]
+ENV PORT=8000
+
+EXPOSE 8000
+
+CMD uvicorn app.main:app --host 0.0.0.0 --port $PORT
