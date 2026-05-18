@@ -19,10 +19,8 @@ jobs:
       - name: Deploy to Render
         uses: johnbeynon/render-deploy-action@v0.0.8
         with:
-          service_id: ${{ secrets.RENDER_SERVICE_ID }}
-          api_key: ${{ secrets.RENDER_API_KEY }}
-          wait_deploy: true
-          github_deployment: true
-          deployment_environment: 'production'
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          clear_cache: false
+          service-id: ${{ secrets.RENDER_SERVICE_ID }}
+          api-key: ${{ secrets.RENDER_API_KEY }}
+          wait-for-success: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          clear-cache: false
