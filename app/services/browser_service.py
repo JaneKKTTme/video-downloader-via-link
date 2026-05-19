@@ -34,6 +34,12 @@ class BrowserService:
 		use_webdriver_manager: Whether to use webdriver-manager for driver binary.
 		driver_path: Path to ChromeDriver executable.
 	"""
+	# Video format patterns for URL detection
+	VIDEO_EXTENSIONS = ('m3u8', 'mp4', 'mkv')
+	"""Video file extensions to look for in URLs."""
+
+	VIDEO_PATTERNS = ('master', 'index')
+	"""Common patterns found in video stream URLs."""
 
 	def __init__(self, config: DownloaderConfig, use_webdriver_manager: bool = True):
 		"""Initialize the browser service.
@@ -289,20 +295,30 @@ class BrowserService:
 
 	def _is_video_url(self, url: str) -> bool:
 		"""Check if URL points to video content.
+
+		Detects video URLs by checking for:
+		- Known video extensions (.m3u8, .mp4, etc.)
+		- Stream patterns (master, index, playlist)
+		- Excluding blob: URLs which aren't directly accessible
 		
 		Args:
 			url: URL to check.
 			
 		Returns:
 			bool: True if URL appears to be a video stream, False otherwise.
-		"""
-		video_extensions = ['m3u8', 'mp4']
-		video_patterns = ['master', 'index']
 
+		Examples:
+			>>> service._is_video_url('https://example.com/stream.m3u8')
+			True
+			>>> service._is_video_url('https://example.com/blob:123')
+			False
+			>>> service._is_video_url('https://example.com/page.html')
+			False
+		"""
 		url_lower = url.lower()
 
-		has_extension = any(ext in url_lower for ext in video_extensions)
-		has_pattern = any(pattern in url_lower for pattern in video_patterns)
+		has_extension = any(ext in url_lower for ext in VIDEO_EXTENSIONS)
+		has_pattern = any(pattern in url_lower for pattern in VIDEO_PATTERNS)
 		is_blob = 'blob' in url_lower
 
 		return has_extension and has_pattern and not is_blob
