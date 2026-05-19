@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException, Form
-from fastapi.responses import RedirectResponse
+from fastapi import APIRouter, Depends, HTTPException, Form, Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 from pydantic import ValidationError
 
 from app.schemas import DownloadResponse, DownloadRequest
@@ -13,7 +14,8 @@ logger = setup_logger(__name__)
 
 router = APIRouter()
 
-@router.post('/download')
+templates = Jinja2Templates(directory='app/templates')
+
 def validate_url_basic(url: str) -> tuple[bool, str]:
 	if not url or not url.strip():
 		return False, 'Пожалуйста, введите ссылку на видео'
@@ -68,48 +70,75 @@ def get_user_friendly_message(error: Exception) -> str:
 
 
 
+@router.post('/download', response_class=HTMLResponse)
 def download_video_form(
+	request: Request,
 	url: str = Form(...),
 	downloader: VideoDownloader = Depends(get_downloader)
 ):
+	context_data = {
+		'request': request,
+		'url': url,
+	}
+
+	is_valid, error_message = validate_url_basic(url)
+	if not is_valid:
+		context_data['result'] = True
+		context_data['success'] = False
+		context_data['message'] = error_message
+		logger.warning(f'URL validation failed (basic): {url} - {error_message}')
+		return templates.TemplateResponse('video_downloader_page.html', context_data)
+
+	is_valid, error_message = validate_url_pydantic(url)
+	if not is_valid:
+		context_data['result'] = True
+		context_data['success'] = False
+		context_data['message'] = error_message
+		logger.warning(f'URL validation failed (pydantic): {url} - {error_message}')
+		return templates.TemplateResponse('video_downloader_page.html', context_data)
+
 	try:
-		validated = DownloadRequest(url=url)
-		url = str(validated.url)
 		logger.info(f'Download request received for: {url}')
 
 		success = downloader.download(url)
 		if success:
-			from urllib.parse import quote
-			encoded_url = quote(url, safe='')
-
-			return RedirectResponse(
-				url=f'/?link={encoded_url}&result=true&success=true&message=Video+downloaded+successfully&file_path=downloads/video_from_{url[:50]}',
-				status_code=303
-			)
+			context_data['result'] = True
+			context_data['success'] = True
+			context_data['message'] = 'Видео успешно загружено!'
+			context_data['file_path'] = f'downloads/video_from_{url[:50]}'
+			logger.info(f'Video downloaded successfully from {url}')
 		else:
-			return RedirectResponse(
-				url=f'/?result=true&success=false&message=Download+failed+for+unknown+reason',
-				status_code=303
-			)
+			context_data['result'] = True
+			context_data['success'] = False
+			context_data['message'] = 'Не удалось загрузить видео. Попробуйте другую ссылку.'
+			logger.info(f'Failed to load video from {url}')
 
 	except DownloadError as e:
 		logger.error(f'Download failed: {e}')
+		context_data['result'] = True
+		context_data['success'] = False
+		context_data['message'] = get_user_friendly_message(e)
 
-		from urllib.parse import quote
-		encoded_url = quote(url, safe='')
-		encoded_message = quote(str(e), safe='')
+	except NetworkError as e:
+		logger.error(f'Network error: {e}')
+		context_data['result'] = True
+		context_data['success'] = False
+		context_data['message'] = get_user_friendly_message(e)
 
-		return RedirectResponse(
-				url=f'/?link={encoded_url}&result=true&success=false&message={encoded_message}',
-				status_code=303
-			)
+	except BrowserError as e:
+		logger.error(f'Browser error: {e}')
+		context_data['result'] = True
+		context_data['success'] = False
+		context_data['message'] = get_user_friendly_message(e)
+
 	except Exception as e:
 		logger.error(f'Unexpected error: {e}', exc_info=True)
-		return RedirectResponse(
-				url=f'/?result=true&success=false&message=Internal+server+error',
-				status_code=303
-			)
+		context_data['result'] = True
+		context_data['success'] = False
+		context_data['message'] = 'Неожиданная ошибка. Попробуйте, пожалуйста, позже.'
 
+	return templates.TemplateResponse('video_downloader_page.html', context_data)
+		
 @router.post('/api/download', response_model=DownloadResponse)
 def download_video_api(
 	request: DownloadRequest,

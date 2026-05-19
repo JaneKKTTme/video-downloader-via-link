@@ -23,25 +23,11 @@ app.mount('/static', StaticFiles(directory='app/static'), name='static')
 
 
 @app.get('/')
-async def root(
-	request: Request,
-	link: str = None,
-	result: bool = False,
-	success: bool = False,
-	message: str = None,
-	file_path: str = None
-):
-	if link:
-		link = unquote(link)
-	if message:
-		message = unquote(message)
+async def root(request: Request):
 
 	context_data = {
 		'request': request,
-		'link': link,
-		'result': result, 
-		'success': success,
-		'message': message,
-		'file_path': file_path
+		'link': '',
+		'result': False
 	}
 	return templates.TemplateResponse('video_downloader_page.html', context_data)
