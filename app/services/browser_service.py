@@ -317,8 +317,8 @@ class BrowserService:
 		"""
 		url_lower = url.lower()
 
-		has_extension = any(ext in url_lower for ext in VIDEO_EXTENSIONS)
-		has_pattern = any(pattern in url_lower for pattern in VIDEO_PATTERNS)
+		has_extension = any(ext in url_lower for ext in self.VIDEO_EXTENSIONS)
+		has_pattern = any(pattern in url_lower for pattern in self.VIDEO_PATTERNS)
 		is_blob = 'blob' in url_lower
 
 		return has_extension and has_pattern and not is_blob
