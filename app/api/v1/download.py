@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, Form
 from fastapi.responses import RedirectResponse
+from pydantic import ValidationError
 
 from app.schemas import DownloadResponse, DownloadRequest
 from app.api.dependencies import get_downloader
 from app.core.downloader import VideoDownloader
-from app.core.exceptions import DownloadError
+from app.core.exceptions import DownloadError, NetworkError, BrowserError, FFmpegError
 from app.utils.logger import setup_logger
 
 
@@ -13,6 +14,60 @@ logger = setup_logger(__name__)
 router = APIRouter()
 
 @router.post('/download')
+def validate_url_basic(url: str) -> tuple[bool, str]:
+	if not url or not url.strip():
+		return False, 'Пожалуйста, введите ссылку на видео'
+	
+	if not url.startswith(('http://', 'https://')):
+		return False, 'Некорректная ссылка. URL должен начинаться с http:// или https://'
+	
+	if len(url) < 10:
+		return False, 'Слишком короткая ссылка. Проверьте правильность ввода'
+	
+	forbidden = ["'", '"', '<', '>', ';', '`']
+	if any(char in url for char in forbidden):
+		return False, 'Ссылка содержит недопустимые символы'
+	
+	return True, 'OK'
+
+def validate_url_pydantic(url: str) -> tuple[bool, str]:
+	try:
+		validated = DownloadRequest(url=url)
+		return True, str(validated.url)
+	except ValidationError as e:
+		errors = e.errors()
+		if errors:
+			error_msg = errors[0].get('msg', 'Неверный формат URL')
+			return False, f'Ошибка в ссылке: {error_msg}'
+		return False, 'Неверный формат ссылки'
+
+def get_user_friendly_message(error: Exception) -> str:
+	error_str = str(error).lower()
+	
+	if isinstance(error, DownloadError):
+		if 'invalid url' in error_str or 'url' in error_str:
+			return 'Некорректная ссылка. Пожалуйста, проверьте URL и попробуйте снова.'
+		elif 'timeout' in error_str:
+			return 'Превышено время ожидания. Возможно, видео загружается слишком долго или сайт недоступен.'
+		elif 'not found' in error_str:
+			return 'Видео не найдено. Проверьте, доступен ли ролик по указанной ссылке.'
+	
+	elif isinstance(error, NetworkError):
+		return 'Ошибка сети. Проверьте интернет-соединение и попробуйте снова.'
+	
+	elif isinstance(error, BrowserError):
+		return 'Не удалось загрузить страницу. Возможно, сайт требует авторизации или временно недоступен.'
+	
+	elif isinstance(error, FFmpegError):
+		return 'Ошибка конвертации видео. Файл будет сохранён в оригинальном формате.'
+	
+	elif 'yt-dlp' in error_str or 'youtube' in error_str:
+		return 'Не удалось загрузить видео с YouTube. Возможно, видео имеет ограничения или требует авторизации.'
+	
+	return f'Произошла ошибка: {str(error)}'
+
+
+
 def download_video_form(
 	url: str = Form(...),
 	downloader: VideoDownloader = Depends(get_downloader)
