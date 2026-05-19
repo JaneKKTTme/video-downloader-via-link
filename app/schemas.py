@@ -8,7 +8,7 @@ class DownloadRequest(BaseModel):
 
 	class Config:
 		json_schema_extra = {
-			'example': {'url': 'https://www.youtube/com/watch?v=...'}
+			'example': {'url': 'https://www.youtube.com/watch?v=...'}
 		}
 
 class DownloadResponse(BaseModel):
