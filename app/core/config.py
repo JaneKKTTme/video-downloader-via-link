@@ -17,9 +17,9 @@ class BrowserConfig:
 		chrome_options: List of Chrome command-line arguments.
 		play_button_xpaths: List of XPath expressions to find play buttons.
 	"""
-	page_load_timeout: int = int(os.getenv('PAGE_LOAD_TIMEOUT', 30))
+	page_load_timeout: int = int(os.getenv('PAGE_LOAD_TIMEOUT', 60))
 	page_load_delay: int = int(os.getenv('PAGE_LOAD_DELAY', 5))
-	network_wait_timeout: int = int(os.getenv('NETWORK_WAIT_TIMEOUT', 20))
+	network_wait_timeout: int = int(os.getenv('NETWORK_WAIT_TIMEOUT', 30))
 	button_wait_timeout: int = int(os.getenv('BUTTON_WAIT_TIMEOUT', 5))
 	scroll_distance: int = 10_000
 	headless_mode: bool = os.getenv('HEADLESS_MODE', 'true').lower() == 'true'
@@ -59,6 +59,10 @@ class BrowserConfig:
 		'--mute-audio',
 		'--disable-notifications',
 		'--disable-popup-blocking',
+
+		'--remote-debugging-port=9222',
+		'--window-size=1280,720',
+		'--disable-blink-features=AutomationControlled',
 	])
 
 	play_button_xpaths: List[str] = field(default_factory=lambda: [

@@ -6,9 +6,9 @@ services:
       - ./cookies.txt:/app/cookies.txt
     environment:
       - HEADLESS_MODE=true
-      - PAGE_LOAD_TIMEOUT=30
+      - PAGE_LOAD_TIMEOUT=60
       - PAGE_LOAD_DELAY=5
-      - NETWORK_WAIT_TIMEOUT=20
+      - NETWORK_WAIT_TIMEOUT=30
       - BUTTON_WAIT_DELAY=5
 
       - ENABLE_VIDEO_CONVERSION=true
