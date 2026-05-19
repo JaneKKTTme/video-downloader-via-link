@@ -27,6 +27,7 @@ async def root(
 	request: Request,
 	link: str = None,
 	result: bool = False,
+	success: bool = False,
 	message: str = None,
 	file_path: str = None
 ):
@@ -34,11 +35,12 @@ async def root(
 		link = unquote(link)
 	if message:
 		message = unquote(message)
-		
+
 	context_data = {
 		'request': request,
 		'link': link,
 		'result': result, 
+		'success': success,
 		'message': message,
 		'file_path': file_path
 	}

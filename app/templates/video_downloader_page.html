@@ -39,13 +39,21 @@
 			Displays download links, error messages, or video information.
 		-->
 		{% if result %}
-		<div id="result-area">
-			{% if success %}
-				{{ message }}<br>
-				{{ file_path }}
-			{% else %}
-				{{ message }}
-			{% endif %}
+		<div class="result-card {% if success %}result-success {% else %}result-error{% endif %}">
+			<div class="result-icon">
+				{% if success %}🎉{% else %}😢{% endif %}
+			</div>
+			<div class="result-content">
+				<div class="result-title">
+					{% if success %}
+						Загрузка прошла успешно!
+					{% else %}
+						Ошибка загрузки...
+					{% endif %}
+				</div>
+				<div class="result-text">{{ message }}</div>
+			</div>
+			<button class="result-close" onclick="this.closest('.result-card').remove()">✕</button>
 		</div>
 		{% endif %}
 
