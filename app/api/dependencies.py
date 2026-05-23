@@ -1,5 +1,4 @@
-from app.core.downloader import VideoDownloader
-from app.core.config import DownloaderConfig
+from app.core import VideoDownloader, DownloaderConfig
 
 
 def get_downloader() -> VideoDownloader:

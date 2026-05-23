@@ -4,8 +4,7 @@ from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from app.api.v1 import health
-from app.api.v1 import download
+from app.api.v1 import health, download
 
 
 app = FastAPI(

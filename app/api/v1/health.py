@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 
 from app.schemas import HealthResponse
-from app.core.config import DownloaderConfig
-from app.services.ffmpeg_manager import FFmpegManager
+from app.core import DownloaderConfig
+from app.services import FFmpegManager
 
 
 router = APIRouter()

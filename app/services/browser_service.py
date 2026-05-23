@@ -15,9 +15,8 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.common.exceptions import WebDriverException, TimeoutException
 from webdriver_manager.chrome import ChromeDriverManager
 
-from app.core.config import DownloaderConfig
-from app.core.exceptions import BrowserError, DownloadTimeoutError
-from app.utils.logger import setup_logger
+from app.core import DownloaderConfig, BrowserError, DownloadTimeoutError
+from app.utils import setup_logger
 
 
 logger = setup_logger(__name__)
