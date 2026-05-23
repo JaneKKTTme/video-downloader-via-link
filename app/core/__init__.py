@@ -1,30 +1,29 @@
-"""Core module containing configuration and exception classes.
+"""Core module containing main business logic.
 
-This module exports the main configuration and exception classes used
-throughout the video downloader application.
+This module provides core classes for configuration, downloading,
+and custom exceptions.
 """
 
 from app.core.config import DownloaderConfig, BrowserConfig
+from app.core.downloader import VideoDownloader
 from app.core.exceptions import (
-	VideoDownloaderError,
-	ConfigurationError,
-	BrowserError,
 	DownloadError,
+	BrowserError,
 	FFmpegError,
 	NetworkError,
-	DownloadTimeoutError
+	DownloadTimeoutError,
 )
+from app.core.interfaces import DownloadStrategy, VideoExtractor
 
 __all__ = [
 	'DownloaderConfig',
 	'BrowserConfig',
-
-	'VideoDownloaderError',
-	'ConfigurationError',
-	'BrowserError',
+	'VideoDownloader',
 	'DownloadError',
+	'BrowserError',
 	'FFmpegError',
-	
 	'NetworkError',
-	'DownloadTimeoutError'
+	'DownloadTimeoutError',
+	'DownloadStrategy',
+	'VideoExtractor',
 ]
